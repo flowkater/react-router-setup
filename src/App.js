@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
-import { Router, Route, Link, IndexRoute, hashHistory } from 'react-router';
+import { Router, Route, Link, IndexRoute, Redirect, hashHistory } from 'react-router';
 
 
-// const Home = () => <div><h1>Home</h1></div>;
+const Home = () => <div><h1>Home</h1></div>;
+const NewPage = (props) => <div><h1>New Page {props.params.id}</h1></div>
+const Container = (props) => <div><Links />{props.children}</div>
+
 // const HomeBody = () => <div>this is the home body</div>;
 // const Other = () => <h1>Other</h1>;
 // const OtherBody = () => <div>this is the Other body</div>;
@@ -15,16 +18,24 @@ import { Router, Route, Link, IndexRoute, hashHistory } from 'react-router';
 const Page = (props) =>
   <div><h1>{props.location.query.message || 'Hello'}</h1><Links /></div>
 
-const Container = (props) =>
-  <div>{props.header}{props.body}<Links /></div>
+// const Container = (props) =>
+//   <div>{props.header}{props.body}<Links /></div>
 
 const Message = (props) =>
   <div><h1>{props.params.message || 'Hello'}</h1><Links /></div>
 
+
 const Links = () =>
   <nav>
-    <Link to={ { pathname: '/', query: {message: 'Yo'}} }>Yo</Link>
+    <Link to="/">Home</Link>
+    <Link to="/old/oldId">Old</Link>
+    <Link to="/new/newId">New</Link>
   </nav>
+
+// const Links = () =>
+//   <nav>
+//     <Link to={ { pathname: '/', query: {message: 'Yo'}} }>Yo</Link>
+//   </nav>
 
 // const Links = () =>
 //   <nav>
@@ -51,7 +62,11 @@ export class App extends Component {
   render() {
     return (
       <Router history={ hashHistory }>
-        <Route path="/" component={Page}></Route>
+        <Route path="/" component={Container}>
+          <IndexRoute component={Home}></IndexRoute>
+          <Route path="/new/:id" component={NewPage}></Route>
+          <Redirect from="/old/:id" to="/new/:id"></Redirect>
+        </Route>
       </Router>
     );
   }
